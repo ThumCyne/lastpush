@@ -88,8 +88,35 @@ void	pushswap(int size, t_stack *a, t_stack *b)
 		while (!(b_is_empty(b)))
 			ft_push_ab(&b, &a, "pa\n");
 	}
-	free(b);
+	free_all(a, b ,NULL);
 	b = NULL;
+}
+void free_stack(t_stack *a)
+{
+	t_stack *tmp;
+	t_stack *ptr;
+
+	if (a != NULL)
+	{
+		ptr = a;
+		while (ptr->next != NULL)
+		{
+			tmp = ptr;
+			ptr = ptr->next;
+			free(tmp);
+		}
+		free(ptr);
+	}
+}
+
+void free_all(t_stack *a, t_stack *b, int *tab)
+{
+	if (tab != NULL)
+		free(tab);
+	if (a != NULL)
+		free_stack(a);
+	if (b != NULL)
+		free_stack(b);
 }
 
 int	main(int argc, char **argv)
@@ -112,6 +139,7 @@ int	main(int argc, char **argv)
 		a = sort3(tab, size);
 		//a = fill(a, tab, size - 1);
 		check_duplicate(a, 3);
+		free_all(a, b , tab);
 	}
 	else if (size == 5)
 	{
@@ -119,13 +147,15 @@ int	main(int argc, char **argv)
 		a = sort5(a, tab, size);
 		//a = fill(a, tab, size - 1);
 		check_duplicate(a, 5);
+		free_all(a, b , tab);
 	}
 	else
 	{
 		a = fill(a, tab, size - 1);
 		check_duplicate(a, size);
 		pushswap(size, a, b);
-		free(b);
+		//free(b);
 	}
+	
 	system("leaks push_swap");
 }

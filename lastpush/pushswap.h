@@ -46,6 +46,7 @@ void	check_duplicate(t_stack *a, int size);
 int		is_max(t_stack *a);
 int		is_min(t_stack *a);
 int		is_sorted(t_stack *a);
+void free_all(t_stack *a, t_stack *b, int *tab);
 int		b_is_empty(t_stack *b);
 int		stack_size(t_stack *a);
 int		check_pos(t_stack *a, int value);

@@ -85,7 +85,7 @@ void	check_duplicate(t_stack *a, int size)
 		}
 		if (check == 0)
 		{
-			ft_putstr("Error duplication\n");
+			ft_putstr("Error\n duplication\n");
 			exit(1);
 		}
 		i++;

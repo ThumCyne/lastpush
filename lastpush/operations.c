@@ -44,7 +44,6 @@ t_stack	*rotate_ab(t_stack *p, char *str)
 void	ft_push_ab(t_stack **a, t_stack **b, char *str)
 {
 	t_stack	*tmp;
-	int		value;
 
 	ft_putstr(str);
 	if (a)

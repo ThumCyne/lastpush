@@ -49,7 +49,14 @@ int	is_digit(char *str)
 
 	i = 0;
 	if (str[i] == '-' || str[i] == '+')
+	{
 		i++;
+		if (str[i] == '\0')
+			{
+				ft_putstr("Error\nINVALID ARGUMENTS\n");
+				exit(1);
+			}
+	}
 	while (str[i])
 	{
 		if (!(str[i] >= '0' && str[i] <= '9'))

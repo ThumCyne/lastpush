@@ -6,70 +6,17 @@
 /*   By: sbentouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 13:05:04 by sbentouy          #+#    #+#             */
-/*   Updated: 2021/11/02 13:08:41 by sbentouy         ###   ########.fr       */
+/*   Updated: 2021/11/02 16:07:52 by sbentouy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
-
-int	*file_tab(int *t, char **av)
-{
-	int	i;
-
-	i = 1;
-	while (av[i])
-	{
-		t[i - 1] = ft_atoi(av[i]);
-		i++;
-	}
-	return (t);
-}
-
-int	valid_parse(char **str)
-{
-	int	i;
-
-	i = 1;
-	while (str[i] && is_digit(str[i]) && in_range_int(str[i]))
-		i++;
-	return (i - 1);
-}
-
-int	*indexxx(int *t, int size, int min, int max)
-{
-	int	*tab;
-	int	i;
-	int	j;
-	int	s;
-
-	i = -1;
-	s = 0;
-	tab = malloc(sizeof(int) * size);
-	while (++i < size)
-	{
-		j = -1;
-		max = 2147483647;
-		while (++j < size)
-		{
-			if (t[j] < max && t[j] > min)
-			{
-				max = t[j];
-				s = j;
-			}
-		}
-		tab[s] = i;
-		min = max;
-	}
-	free (t);
-	return (tab);
-}
 
 void	pushswap(int size, t_stack *a, t_stack *b)
 {
 	int		maxbits;
 	int		i;
 	int		j;
-	t_op	*tp;
 
 	maxbits = 0;
 	while ((size) >> maxbits != 0)
@@ -88,13 +35,14 @@ void	pushswap(int size, t_stack *a, t_stack *b)
 		while (!(b_is_empty(b)))
 			ft_push_ab(&b, &a, "pa\n");
 	}
-	free_all(a, b ,NULL);
+	free_all(a, b, NULL);
 	b = NULL;
 }
-void free_stack(t_stack *a)
+
+void	free_stack(t_stack *a)
 {
-	t_stack *tmp;
-	t_stack *ptr;
+	t_stack	*tmp;
+	t_stack	*ptr;
 
 	if (a != NULL)
 	{
@@ -109,7 +57,7 @@ void free_stack(t_stack *a)
 	}
 }
 
-void free_all(t_stack *a, t_stack *b, int *tab)
+void	free_all(t_stack *a, t_stack *b, int *tab)
 {
 	if (tab != NULL)
 		free(tab);
@@ -117,6 +65,21 @@ void free_all(t_stack *a, t_stack *b, int *tab)
 		free_stack(a);
 	if (b != NULL)
 		free_stack(b);
+}
+void check_and_sort(t_stack *a, t_stack	*b, int *tab, int size)
+{
+	if (size == 5)
+	{
+		a = sort5(a, tab, size);
+		check_duplicate(a, 5);
+		free_all(a, b, tab);
+	}
+	else
+	{
+		a = fill(a, tab, size - 1);
+		check_duplicate(a, size);
+		pushswap(size, a, b);
+	}
 }
 
 int	main(int argc, char **argv)
@@ -126,36 +89,33 @@ int	main(int argc, char **argv)
 	int		size;
 	int		*tab;
 
+	if (argc > 1)
+	{
 	a = NULL;
 	b = NULL;
 	size = valid_parse(argv);
 	tab = malloc(sizeof(int) * size);
 	tab = file_tab(tab, argv);
+	if (tab_has_dup(tab, size))
+	{
+		free_all(a, b, tab);
+		ft_putstr("Error\nduplicate arg\n");
+		return (0);
+	}
 	tab = indexxx(tab, size, -2147483648, 2147483647);
-	// a = fill(a, tab, size - 1);
-	// check_duplicate(a, size);
+	if (is_tab_sorted(tab, size))
+	{
+		free_all(a, b, tab);
+		return (0);
+	}
 	if (size == 3)
 	{
 		a = sort3(tab, size);
-		//a = fill(a, tab, size - 1);
 		check_duplicate(a, 3);
-		free_all(a, b , tab);
-	}
-	else if (size == 5)
-	{
-
-		a = sort5(a, tab, size);
-		//a = fill(a, tab, size - 1);
-		check_duplicate(a, 5);
-		free_all(a, b , tab);
+		free_all(a, b, tab);
 	}
 	else
-	{
-		a = fill(a, tab, size - 1);
-		check_duplicate(a, size);
-		pushswap(size, a, b);
-		//free(b);
+		check_and_sort(a, b, tab, size);
 	}
-	
-	system("leaks push_swap");
+	return (0);
 }
